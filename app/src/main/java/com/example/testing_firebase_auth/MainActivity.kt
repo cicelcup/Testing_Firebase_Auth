@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         auth = FirebaseAuth.getInstance()
+        email = "cicelcup@gmail.com"
+        password = "123456"
 
         Log.i(TAG, "User: ${auth.currentUser?.isEmailVerified}")
 
@@ -37,13 +39,11 @@ class MainActivity : AppCompatActivity() {
             updateLabel()
 
             signUpButton.setOnClickListener {
-                email = "cicelcup@gmail.com"
-                password = "123456"
                 signUp(email, password)
             }
 
             signInButton.setOnClickListener {
-
+                signIn(email, password)
             }
 
             emailValidationButton.setOnClickListener {
@@ -80,6 +80,18 @@ class MainActivity : AppCompatActivity() {
                     updateLabel()
                 } else {
                     displayLogAndToast("Failure user creation ${task.exception}")
+                }
+            }
+    }
+
+    private fun signIn(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    displayLogAndToast("Sign in successful")
+                    updateLabel()
+                } else {
+                    displayLogAndToast("Failure Sign In ${task.exception}")
                 }
             }
     }
