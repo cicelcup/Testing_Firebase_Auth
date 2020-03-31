@@ -8,6 +8,10 @@
         <variable
             name="information"
             type="String" />
+
+        <variable
+            name="data"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,16 +20,27 @@
         tools:context=".MainActivity">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/informationTextView"
             style="@style/text_information_style"
             android:text="@{information}"
-            app:layout_constraintBottom_toTopOf="@+id/signUpButton"
-            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@+id/dataTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/information_text_label" />
+
+        <TextView
+            android:id="@+id/dataTextView"
+            style="@style/text_information_style"
+            android:text="@{data}"
+            app:layout_constraintBottom_toTopOf="@+id/signUpButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/informationTextView"
+            tools:text="@string/data_text_label" />
 
         <Button
             android:id="@+id/signUpButton"
@@ -35,7 +50,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/dataTextView" />
 
         <Button
             android:id="@+id/signInButton"
@@ -101,11 +116,31 @@
             android:id="@+id/deleteAccountButton"
             style="@style/button_style"
             android:text="@string/delete_account_button_label"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/sendDataButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/signOutButton" />
+
+        <Button
+            android:id="@+id/sendDataButton"
+            style="@style/button_style"
+            android:text="@string/send_data_button_label"
+            app:layout_constraintBottom_toTopOf="@+id/readDataButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/deleteAccountButton" />
+
+        <Button
+            android:id="@+id/readDataButton"
+            style="@style/button_style"
+            android:text="@string/read_data_button_label"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sendDataButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

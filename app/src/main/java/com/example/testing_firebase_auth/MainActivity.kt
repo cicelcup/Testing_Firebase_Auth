@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         with(binding) {
 
             updateLabel()
+            updateData()
 
             signUpButton.setOnClickListener { signUp(email, password) }
 
@@ -159,5 +160,9 @@ class MainActivity : AppCompatActivity() {
         binding.information = "User: ${auth.currentUser ?: "Not user"} " +
                 "/ Name: ${auth.currentUser?.displayName ?: "Not name"} " +
                 "/ EmailValidate: ${auth.currentUser?.isEmailVerified ?: "Not email"}"
+    }
+
+    private fun updateData() {
+        binding.data = "JAPM"
     }
 }
