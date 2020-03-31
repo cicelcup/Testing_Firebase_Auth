@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.testing_firebase_auth.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var email: String
     private lateinit var password: String
+    private lateinit var name: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         email = "cicelcup@gmail.com"
         password = "123456"
+        name = "Augusto"
 
         Log.i(TAG, "User: ${auth.currentUser?.isEmailVerified}")
 
@@ -59,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             updateAccountButton.setOnClickListener {
-
+                updateProfile(name)
             }
 
             signOutButton.setOnClickListener {
@@ -104,6 +107,21 @@ class MainActivity : AppCompatActivity() {
                     updateLabel()
                 } else {
                     displayLogAndToast("Failure email validation ${task.exception}")
+                }
+            }
+    }
+
+    private fun updateProfile(name: String) {
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(name)
+            .build()
+        auth.currentUser?.updateProfile(profileUpdates)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    displayLogAndToast("Profile Updated")
+                    updateLabel()
+                } else {
+                    displayLogAndToast("Failure update profile ${task.exception}")
                 }
             }
     }
