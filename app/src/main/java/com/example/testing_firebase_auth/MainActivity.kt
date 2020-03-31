@@ -40,17 +40,11 @@ class MainActivity : AppCompatActivity() {
 
             updateLabel()
 
-            signUpButton.setOnClickListener {
-                signUp(email, password)
-            }
+            signUpButton.setOnClickListener { signUp(email, password) }
 
-            signInButton.setOnClickListener {
-                signIn(email, password)
-            }
+            signInButton.setOnClickListener { signIn(email, password) }
 
-            emailValidationButton.setOnClickListener {
-                sendEmail()
-            }
+            emailValidationButton.setOnClickListener { sendEmail() }
 
             accountValidationButton.setOnClickListener {
 
@@ -60,17 +54,11 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-            updateAccountButton.setOnClickListener {
-                updateProfile(name)
-            }
+            updateAccountButton.setOnClickListener { updateProfile(name) }
 
-            signOutButton.setOnClickListener {
-                signOut()
-            }
+            signOutButton.setOnClickListener { signOut() }
 
-            deleteAccountButton.setOnClickListener {
-
-            }
+            deleteAccountButton.setOnClickListener { deleteUser() }
         }
     }
 
@@ -126,6 +114,16 @@ class MainActivity : AppCompatActivity() {
         auth.signOut()
         displayLogAndToast("User signed out")
         updateLabel()
+    }
+
+    private fun deleteUser() {
+        auth.currentUser?.delete()
+            ?.addOnCompleteListener { task ->
+                taskListener(
+                    task, "User Deleted",
+                    "Failure delete user ${task.exception}"
+                )
+            }
     }
 
     //Generic function receiving any kind of Task for displaying and log the result
