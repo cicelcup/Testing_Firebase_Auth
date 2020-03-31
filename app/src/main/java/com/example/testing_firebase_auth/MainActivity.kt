@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var email: String
     private lateinit var password: String
     private lateinit var name: String
+    private lateinit var dataToSend: String
 
     //Messages Reference
     private val dataTestReference: DatabaseReference =
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         email = "cicelcup@gmail.com"
         password = "123456"
         name = "Augusto"
+        dataToSend = "ZEZEZE"
 
         with(binding) {
 
@@ -64,7 +66,24 @@ class MainActivity : AppCompatActivity() {
             signOutButton.setOnClickListener { signOut() }
 
             deleteAccountButton.setOnClickListener { deleteUser() }
+
+            sendDataButton.setOnClickListener { sendData(dataToSend) }
+
+            readDataButton.setOnClickListener {
+
+            }
         }
+    }
+
+    private fun sendData(dataToSend: String) {
+        val firebaseData = FirebaseData(dataToSend)
+        dataTestReference.child(auth.uid.toString()).setValue(firebaseData)
+            .addOnCompleteListener { task ->
+                taskListener(
+                    task, "Data sent it",
+                    "Error sending data ${task.exception}"
+                )
+            }
     }
 
     //Sign up with the correspond email and password
