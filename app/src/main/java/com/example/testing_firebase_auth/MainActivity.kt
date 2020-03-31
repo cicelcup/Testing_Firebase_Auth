@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             signOutButton.setOnClickListener {
-
+                signOut()
             }
 
             deleteAccountButton.setOnClickListener {
@@ -94,6 +94,12 @@ class MainActivity : AppCompatActivity() {
                     displayLogAndToast("Failure email validation ${task.exception}")
                 }
             }
+    }
+
+    private fun signOut() {
+        auth.signOut()
+        displayLogAndToast("User signed out")
+        updateLabel()
     }
 
     private fun displayLogAndToast(message: String) {
