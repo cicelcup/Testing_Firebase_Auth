@@ -7,9 +7,6 @@ import androidx.databinding.DataBindingUtil
 import com.example.testing_firebase_auth.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 
-
-
-
 class MainActivity : AppCompatActivity() {
 
     companion object {
@@ -19,6 +16,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var auth: FirebaseAuth
+
+    private lateinit var email: String
+    private lateinit var password: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +33,9 @@ class MainActivity : AppCompatActivity() {
 
         with(binding) {
             signUpButton.setOnClickListener {
-
+                email = "cicelcup@hotmail.com"
+                password = "123456"
+                signUp(email, password)
             }
 
             signInButton.setOnClickListener {
@@ -60,5 +62,16 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    private fun signUp(email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i(TAG, "User Created")
+                } else {
+                    Log.i(TAG, "Failure User Creation ${task.exception}")
+                }
+            }
     }
 }
