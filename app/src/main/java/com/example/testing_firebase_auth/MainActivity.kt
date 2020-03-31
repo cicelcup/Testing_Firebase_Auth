@@ -2,6 +2,7 @@ package com.example.testing_firebase_auth
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.testing_firebase_auth.databinding.ActivityMainBinding
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         with(binding) {
 
-            information = "Information"
+            updateLabel()
 
             signUpButton.setOnClickListener {
                 email = "cicelcup@gmail.com"
@@ -75,9 +76,10 @@ class MainActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.i(TAG, "User Created")
+                    displayLogAndToast("User created")
+                    updateLabel()
                 } else {
-                    Log.i(TAG, "Failure User Creation ${task.exception}")
+                    displayLogAndToast("Failure user creation ${task.exception}")
                 }
             }
     }
@@ -86,10 +88,22 @@ class MainActivity : AppCompatActivity() {
         auth.currentUser?.sendEmailVerification()
             ?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.i(TAG, "Email Validation sent")
+                    displayLogAndToast("Email validation sent")
+                    updateLabel()
                 } else {
-                    Log.i(TAG, "Failure Email Validation ${task.exception}")
+                    displayLogAndToast("Failure email validation ${task.exception}")
                 }
             }
+    }
+
+    private fun displayLogAndToast(message: String) {
+        Log.i(TAG, message)
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun updateLabel() {
+        binding.information = "User: ${auth.currentUser ?: "Not user"} " +
+                "/ Name: ${auth.currentUser?.displayName ?: "Not name"} " +
+                "/ EmailValidate: ${auth.currentUser?.isEmailVerified ?: "Not email"}"
     }
 }
