@@ -100,54 +100,75 @@ class MainActivity : AppCompatActivity() {
 
     //Send the email for validation
     private fun sendEmail() {
-        auth.currentUser?.sendEmailVerification()
-            ?.addOnCompleteListener { task ->
-                taskListener(
-                    task, "Email validation sent",
-                    "Failure email validation ${task.exception}"
-                )
-            }
+        if (auth.currentUser != null) {
+            auth.currentUser?.sendEmailVerification()
+                ?.addOnCompleteListener { task ->
+                    taskListener(
+                        task, "Email validation sent",
+                        "Failure email validation ${task.exception}"
+                    )
+                }
+        } else {
+            displayLogAndToast("Email validation is not possible. User not auth")
+        }
     }
 
     private fun resetPassword() {
-        auth.sendPasswordResetEmail(email)
-            .addOnCompleteListener { task ->
-                taskListener(
-                    task, "Recovery email sent successful",
-                    "Failure sending recovery email ${task.exception}"
-                )
-            }
+        if (auth.currentUser != null) {
+            auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener { task ->
+                    taskListener(
+                        task, "Recovery email sent successful",
+                        "Failure sending recovery email ${task.exception}"
+                    )
+                }
+        } else {
+            displayLogAndToast("It's not possible to reset password. User not auth")
+        }
     }
 
     //update profile function. It creates a profile update with the correspond information
     private fun updateProfile(name: String) {
-        val profileUpdates = UserProfileChangeRequest.Builder()
-            .setDisplayName(name)
-            .build()
-        auth.currentUser?.updateProfile(profileUpdates)
-            ?.addOnCompleteListener { task ->
-                taskListener(
-                    task, "Profile Updated",
-                    "Failure update profile ${task.exception}"
-                )
-            }
+        if (auth.currentUser != null) {
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build()
+
+            auth.currentUser?.updateProfile(profileUpdates)
+                ?.addOnCompleteListener { task ->
+                    taskListener(
+                        task, "Profile Updated",
+                        "Failure update profile ${task.exception}"
+                    )
+                }
+        } else {
+            displayLogAndToast("It is not possible update profile. User not auth")
+        }
     }
 
     //Sign out function
     private fun signOut() {
-        auth.signOut()
-        displayLogAndToast("User signed out")
-        updateLabel()
+        if (auth.currentUser != null) {
+            auth.signOut()
+            displayLogAndToast("User signed out")
+            updateLabel()
+        } else {
+            displayLogAndToast("It is not possible to sign out. User not auth")
+        }
     }
 
     private fun deleteUser() {
-        auth.currentUser?.delete()
-            ?.addOnCompleteListener { task ->
-                taskListener(
-                    task, "User Deleted",
-                    "Failure delete user ${task.exception}"
-                )
-            }
+        if (auth.currentUser != null) {
+            auth.currentUser?.delete()
+                ?.addOnCompleteListener { task ->
+                    taskListener(
+                        task, "User Deleted",
+                        "Failure delete user ${task.exception}"
+                    )
+                }
+        } else {
+            displayLogAndToast("It is not possible to delete user. User not auth")
+        }
     }
 
     private fun sendData(dataToSend: String) {
