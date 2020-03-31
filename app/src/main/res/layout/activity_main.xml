@@ -12,14 +12,76 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+        <Button
+            android:id="@+id/signUpButton"
+            style="@style/button_style"
+            android:text="@string/sign_up_button_label"
+            app:layout_constraintBottom_toTopOf="@+id/signInButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/signInButton"
+            style="@style/button_style"
+            android:text="@string/sign_in_button_label"
+            app:layout_constraintBottom_toTopOf="@+id/emailValidationButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/signUpButton" />
+
+        <Button
+            android:id="@+id/emailValidationButton"
+            style="@style/button_style"
+            android:text="@string/validate_email_button_label"
+            app:layout_constraintBottom_toTopOf="@+id/accountValidationButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/signInButton" />
+
+        <Button
+            android:id="@+id/accountValidationButton"
+            style="@style/button_style"
+            android:text="@string/validate_account_button_label"
+            app:layout_constraintBottom_toTopOf="@+id/updateAccountButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/emailValidationButton" />
+
+        <Button
+            android:id="@+id/updateAccountButton"
+            style="@style/button_style"
+            android:text="@string/update_account_button_label"
+            app:layout_constraintBottom_toTopOf="@+id/signOutButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/accountValidationButton" />
+
+        <Button
+            android:id="@+id/signOutButton"
+            style="@style/button_style"
+            android:text="@string/sign_out_button_label"
+            app:layout_constraintBottom_toTopOf="@+id/deleteAccountButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updateAccountButton" />
+
+        <Button
+            android:id="@+id/deleteAccountButton"
+            style="@style/button_style"
+            android:text="@string/delete_account_button_label"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/signOutButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
