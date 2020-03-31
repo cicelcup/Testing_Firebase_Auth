@@ -29,11 +29,11 @@ class MainActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        Log.i(TAG, "User: ${auth.currentUser}")
+        Log.i(TAG, "User: ${auth.currentUser?.isEmailVerified}")
 
         with(binding) {
             signUpButton.setOnClickListener {
-                email = "cicelcup@hotmail.com"
+                email = "cicelcup@gmail.com"
                 password = "123456"
                 signUp(email, password)
             }
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             emailValidationButton.setOnClickListener {
-
+                sendEmail()
             }
 
             accountValidationButton.setOnClickListener {
@@ -62,6 +62,17 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    private fun sendEmail() {
+        auth.currentUser?.sendEmailVerification()
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i(TAG, "Email Validation sent")
+                } else {
+                    Log.i(TAG, "Failure Email Validation ${task.exception}")
+                }
+            }
     }
 
     private fun signUp(email: String, password: String) {
