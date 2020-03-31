@@ -9,6 +9,8 @@ import com.example.testing_firebase_auth.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +25,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var email: String
     private lateinit var password: String
     private lateinit var name: String
+
+    //Messages Reference
+    private val dataTestReference: DatabaseReference =
+        FirebaseDatabase.getInstance().getReference("dataTest")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
