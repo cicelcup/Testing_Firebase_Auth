@@ -9,8 +9,7 @@ import com.example.testing_firebase_auth.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,10 +25,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var password: String
     private lateinit var name: String
     private lateinit var dataToSend: String
+    private lateinit var dataReceived: String
 
     //Messages Reference
     private val dataTestReference: DatabaseReference =
         FirebaseDatabase.getInstance().getReference("dataTest")
+
+    //Firebase Listener
+    private var firebaseListener: ValueEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +45,12 @@ class MainActivity : AppCompatActivity() {
         email = "cicelcup@gmail.com"
         password = "123456"
         name = "Augusto"
-        dataToSend = "ZEZEZE"
+        dataToSend = "Information sent it"
 
         with(binding) {
 
             updateLabel()
-            updateData()
+            updateData("No data")
 
             signUpButton.setOnClickListener { signUp(email, password) }
 
@@ -69,21 +72,8 @@ class MainActivity : AppCompatActivity() {
 
             sendDataButton.setOnClickListener { sendData(dataToSend) }
 
-            readDataButton.setOnClickListener {
-
-            }
+            readDataButton.setOnClickListener { listenData() }
         }
-    }
-
-    private fun sendData(dataToSend: String) {
-        val firebaseData = FirebaseData(dataToSend)
-        dataTestReference.child(auth.uid.toString()).setValue(firebaseData)
-            .addOnCompleteListener { task ->
-                taskListener(
-                    task, "Data sent it",
-                    "Error sending data ${task.exception}"
-                )
-            }
     }
 
     //Sign up with the correspond email and password
@@ -160,6 +150,39 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    private fun sendData(dataToSend: String) {
+        val firebaseData = FirebaseData(dataToSend)
+        dataTestReference.child(auth.uid.toString()).setValue(firebaseData)
+            .addOnCompleteListener { task ->
+                taskListener(
+                    task, "Data sent it",
+                    "Error sending data ${task.exception}"
+                )
+            }
+    }
+
+    private fun listenData() {
+        if (firebaseListener == null) {
+            firebaseListener = object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                    displayLogAndToast("Error reading data $p0")
+                }
+
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val post = dataSnapshot
+                        .getValue(FirebaseData::class.java)?.data ?: "No data received"
+                    updateData(post)
+                    displayLogAndToast(post)
+                    dataTestReference.child(auth.uid.toString())
+                        .removeEventListener(firebaseListener!!)
+                }
+
+            }
+        }
+        dataTestReference.child(auth.uid.toString())
+            .addListenerForSingleValueEvent(firebaseListener!!)
+    }
+
     //Generic function receiving any kind of Task for displaying and log the result
     private fun <T : Any?> taskListener(
         task: Task<T>,
@@ -187,7 +210,7 @@ class MainActivity : AppCompatActivity() {
                 "/ EmailValidate: ${auth.currentUser?.isEmailVerified ?: "Not email"}"
     }
 
-    private fun updateData() {
-        binding.data = "JAPM"
+    private fun updateData(dataReceived: String) {
+        binding.data = dataReceived
     }
 }
