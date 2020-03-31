@@ -50,9 +50,7 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-            resetPasswordButton.setOnClickListener {
-
-            }
+            resetPasswordButton.setOnClickListener { resetPassword() }
 
             updateAccountButton.setOnClickListener { updateProfile(name) }
 
@@ -91,6 +89,16 @@ class MainActivity : AppCompatActivity() {
                 taskListener(
                     task, "Email validation sent",
                     "Failure email validation ${task.exception}"
+                )
+            }
+    }
+
+    private fun resetPassword() {
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                taskListener(
+                    task, "Recovery email sent successful",
+                    "Failure sending recovery email ${task.exception}"
                 )
             }
     }
