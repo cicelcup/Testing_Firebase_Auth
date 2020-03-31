@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         with(binding) {
 
-            updateLabel()
+            updateUI()
             updateData("No data")
 
             signUpButton.setOnClickListener { signUp(email, password) }
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         if (auth.currentUser != null) {
             auth.signOut()
             displayLogAndToast("User signed out")
-            updateLabel()
+            updateUI()
         } else {
             displayLogAndToast("It is not possible to sign out. User not auth")
         }
@@ -212,7 +212,7 @@ class MainActivity : AppCompatActivity() {
     ) {
         if (task.isSuccessful) {
             displayLogAndToast(successMessage)
-            updateLabel()
+            updateUI()
         } else {
             displayLogAndToast(failureMessage)
         }
@@ -225,10 +225,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     //Update the label in the UI to show the current information
-    private fun updateLabel() {
-        binding.information = "User: ${auth.currentUser ?: "Not user"} " +
-                "/ Name: ${auth.currentUser?.displayName ?: "Not name"} " +
-                "/ EmailValidate: ${auth.currentUser?.isEmailVerified ?: "Not email"}"
+    private fun updateUI() {
+        with(binding) {
+            currentUser = auth.currentUser
+            information = "User: ${auth.currentUser ?: "Not user"} " +
+                    "/ Name: ${auth.currentUser?.displayName ?: "Not name"} " +
+                    "/ EmailValidate: ${auth.currentUser?.isEmailVerified ?: "Not email"}"
+        }
     }
 
     private fun updateData(dataReceived: String) {
