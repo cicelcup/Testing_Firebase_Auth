@@ -7,4 +7,6 @@
     <string name="update_account_button_label">Update account</string>
     <string name="sign_out_button_label">Sign Out</string>
     <string name="delete_account_button_label">Delete account</string>
+    <string name="reset_password_button_label">Reset Password</string>
+    <string name="information_text_label">Information Text</string>
 </resources>

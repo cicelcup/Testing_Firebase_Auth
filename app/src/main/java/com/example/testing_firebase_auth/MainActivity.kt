@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity() {
         Log.i(TAG, "User: ${auth.currentUser?.isEmailVerified}")
 
         with(binding) {
+
+            information = "Information"
+
             signUpButton.setOnClickListener {
                 email = "cicelcup@gmail.com"
                 password = "123456"
@@ -50,6 +53,10 @@ class MainActivity : AppCompatActivity() {
 
             }
 
+            resetPasswordButton.setOnClickListener {
+
+            }
+
             updateAccountButton.setOnClickListener {
 
             }
@@ -64,17 +71,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendEmail() {
-        auth.currentUser?.sendEmailVerification()
-            ?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.i(TAG, "Email Validation sent")
-                } else {
-                    Log.i(TAG, "Failure Email Validation ${task.exception}")
-                }
-            }
-    }
-
     private fun signUp(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -82,6 +78,17 @@ class MainActivity : AppCompatActivity() {
                     Log.i(TAG, "User Created")
                 } else {
                     Log.i(TAG, "Failure User Creation ${task.exception}")
+                }
+            }
+    }
+
+    private fun sendEmail() {
+        auth.currentUser?.sendEmailVerification()
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i(TAG, "Email Validation sent")
+                } else {
+                    Log.i(TAG, "Failure Email Validation ${task.exception}")
                 }
             }
     }
