@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var password: String
     private lateinit var name: String
     private lateinit var dataToSend: String
-    private lateinit var dataReceived: String
 
     //Messages Reference
     private val dataTestReference: DatabaseReference =
