@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity() {
     //Send the email for validation
     private fun sendEmail() {
         if (auth.currentUser != null) {
+            auth.setLanguageCode("es")
             auth.currentUser?.sendEmailVerification()
                 ?.addOnCompleteListener { task ->
                     taskListener(
@@ -114,6 +115,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun resetPassword() {
         if (auth.currentUser != null) {
+            auth.setLanguageCode("es")
             auth.sendPasswordResetEmail(email)
                 .addOnCompleteListener { task ->
                     taskListener(
@@ -121,6 +123,7 @@ class MainActivity : AppCompatActivity() {
                         "Failure sending recovery email ${task.exception}"
                     )
                 }
+            auth.signOut()
         } else {
             displayLogAndToast("It's not possible to reset password. User not auth")
         }
