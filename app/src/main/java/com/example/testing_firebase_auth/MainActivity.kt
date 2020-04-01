@@ -26,9 +26,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var name: String
     private lateinit var dataToSend: String
 
-    //Messages Reference
-    private val dataTestReference: DatabaseReference =
-        FirebaseDatabase.getInstance().getReference("dataTest")
+    //Firebase Instance
+    private val firebaseDB = FirebaseDatabase.getInstance()
+
+    //Data Reference
+    private val dataTestReference = firebaseDB.getReference("dataTest")
+
+    //User Reference
+    private val userValidationReference = firebaseDB.getReference("users")
 
     //Firebase Listener
     private var firebaseListener: ValueEventListener? = null
@@ -57,9 +62,7 @@ class MainActivity : AppCompatActivity() {
 
             emailValidationButton.setOnClickListener { sendEmail() }
 
-            accountValidationButton.setOnClickListener {
-
-            }
+            accountValidationButton.setOnClickListener { validateUser(true) }
 
             resetPasswordButton.setOnClickListener { resetPassword() }
 
@@ -95,6 +98,11 @@ class MainActivity : AppCompatActivity() {
                     "Failure Sign In ${task.exception}"
                 )
             }
+    }
+
+    // Validate User Function
+    private fun validateUser(dataToSend: Boolean) {
+        sendDataToFirebase(FirebaseUsers(active = dataToSend), userValidationReference)
     }
 
     //Send the email for validation
@@ -159,6 +167,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Delete user function
     private fun deleteUser() {
         if (auth.currentUser != null) {
             auth.currentUser?.delete()
@@ -173,17 +182,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Send Data function
     private fun sendData(dataToSend: String) {
-        val firebaseData = FirebaseData(dataToSend)
-        dataTestReference.child(auth.uid.toString()).setValue(firebaseData)
-            .addOnCompleteListener { task ->
-                taskListener(
-                    task, "Data sent it",
-                    "Error sending data ${task.exception}"
-                )
-            }
+        sendDataToFirebase(FirebaseData(data = dataToSend), dataTestReference)
     }
 
+    //Listening Data
     private fun listenData() {
         if (firebaseListener == null) {
             firebaseListener = object : ValueEventListener {
@@ -223,7 +227,7 @@ class MainActivity : AppCompatActivity() {
     //Log the message parameter
     private fun displayLogAndToast(message: String) {
         Log.i(TAG, message)
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     //Update the label in the UI to show the current information
@@ -236,6 +240,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Send any data to firebase to any reference
+    private fun sendDataToFirebase(firebaseData: Any, reference: DatabaseReference) {
+        reference.child(auth.uid.toString()).setValue(firebaseData)
+            .addOnCompleteListener { task ->
+                taskListener(
+                    task, "Data sent it",
+                    "Error sending data ${task.exception}"
+                )
+            }
+    }
+
+    //Update the data received
     private fun updateData(dataReceived: String) {
         binding.data = dataReceived
     }
