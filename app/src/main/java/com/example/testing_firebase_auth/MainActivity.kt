@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.*
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var password: String
     private lateinit var name: String
     private lateinit var dataToSend: String
+    private var cont = Random.nextInt(0, 100)
 
     //Firebase Instance
     private val firebaseDB = FirebaseDatabase.getInstance()
@@ -46,10 +48,12 @@ class MainActivity : AppCompatActivity() {
         )
 
         auth = FirebaseAuth.getInstance()
+
+        //example information variables
         email = "cicelcup@gmail.com"
         password = "123456"
         name = "Augusto"
-        dataToSend = "Information sent it"
+        dataToSend = "Information sent it $cont"
 
         with(binding) {
 
@@ -162,6 +166,7 @@ class MainActivity : AppCompatActivity() {
             auth.signOut()
             displayLogAndToast("User signed out")
             updateUI()
+            updateData("No data")
         } else {
             displayLogAndToast("It is not possible to sign out. User not auth")
         }
@@ -183,8 +188,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     //Send Data function
-    private fun sendData(dataToSend: String) {
-        sendDataToFirebase(FirebaseData(data = dataToSend), dataTestReference)
+    private fun sendData(data: String) {
+        sendDataToFirebase(FirebaseData(data = data), dataTestReference)
+        cont = Random.nextInt(0, 100); dataToSend = "Information sent it $cont"
     }
 
     //Listening Data
@@ -234,8 +240,8 @@ class MainActivity : AppCompatActivity() {
     private fun updateUI() {
         with(binding) {
             currentUser = auth.currentUser
-            information = "User: ${auth.currentUser ?: "Not user"} " +
-                    "/ Name: ${auth.currentUser?.displayName ?: "Not name"} " +
+            information = "User: ${auth.currentUser?.uid ?: "Not user"} \n" +
+                    "Name: ${auth.currentUser?.displayName ?: "Not name"} " +
                     "/ EmailValidate: ${auth.currentUser?.isEmailVerified ?: "Not email"}"
         }
     }
