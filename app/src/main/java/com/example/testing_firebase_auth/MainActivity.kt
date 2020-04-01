@@ -11,17 +11,23 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.*
 import kotlin.random.Random
+import kotlin.reflect.KMutableProperty
+import kotlin.reflect.full.memberProperties
 
 class MainActivity : AppCompatActivity() {
 
+    //Constant for Log
     companion object {
         const val TAG = "Message MainActivity"
     }
 
+    //Binding Variable
     private lateinit var binding: ActivityMainBinding
 
+    //Auth Variable
     private lateinit var auth: FirebaseAuth
 
+    //User Information Variables
     private lateinit var email: String
     private lateinit var password: String
     private lateinit var name: String
@@ -195,24 +201,33 @@ class MainActivity : AppCompatActivity() {
 
     //Listening Data
     private fun listenData() {
+        readDataFromFirebase<FirebaseData>(dataTestReference, "data")
+    }
+
+    //Read data from firebase
+    private inline fun <reified T> readDataFromFirebase(
+        reference: DatabaseReference,
+        propertyName: String
+    ) {
         if (firebaseListener == null) {
             firebaseListener = object : ValueEventListener {
-                override fun onCancelled(p0: DatabaseError) {
-                    displayLogAndToast("Error reading data $p0")
+                override fun onCancelled(databaseError: DatabaseError) {
+                    displayLogAndToast("Error reading data $databaseError")
                 }
 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val post = dataSnapshot
-                        .getValue(FirebaseData::class.java)?.data ?: "No data received"
-                    updateData(post)
-                    displayLogAndToast(post)
-                    dataTestReference.child(auth.uid.toString())
+                    val dataReceived = dataSnapshot
+                        .getValue(T::class.java) ?: "No data received"
+                    val fieldRequested = readUnknownProperty(dataReceived, propertyName)
+                    updateData(fieldRequested.toString())
+                    displayLogAndToast(fieldRequested.toString())
+                    reference.child(auth.uid.toString())
                         .removeEventListener(firebaseListener!!)
                 }
 
             }
         }
-        dataTestReference.child(auth.uid.toString())
+        reference.child(auth.uid.toString())
             .addListenerForSingleValueEvent(firebaseListener!!)
     }
 
@@ -260,5 +275,31 @@ class MainActivity : AppCompatActivity() {
     //Update the data received
     private fun updateData(dataReceived: String) {
         binding.data = dataReceived
+    }
+
+    //Using reflection to check any field value from a class that is unknown
+    private fun readUnknownProperty(dataObject: Any, propertyName: String): Any? {
+        val property = dataObject::class.memberProperties.find {
+            it.name == propertyName
+        }
+        return property?.getter?.call(dataObject)
+    }
+
+    //Using reflection to check any field value from a class that is unknown
+    //It's not used in the current project but it could works in others projects
+    private fun setUnknownProperty(dataObject: Any, propertyName: String, propertyValue: Any) {
+        val property = dataObject::class.memberProperties.find {
+            it.name == propertyName
+        }
+        if (property == null) {
+            Log.i(TAG, "Not property found it")
+            return
+        }
+
+        if (property is KMutableProperty<*>) {
+            property.setter.call(dataObject, propertyValue)
+        } else {
+            Log.i(TAG, "Property not mutable")
+        }
     }
 }
