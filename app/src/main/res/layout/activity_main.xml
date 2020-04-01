@@ -16,6 +16,10 @@
         <variable
             name="currentUser"
             type="com.google.firebase.auth.FirebaseUser" />
+
+        <variable
+            name="userValidated"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -88,6 +92,7 @@
             android:text="@string/validate_account_button_label"
             app:buttonType="@{4}"
             app:disableIf="@{currentUser}"
+            app:userValidated="@{userValidated}"
             app:layout_constraintBottom_toTopOf="@+id/resetPasswordButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -98,8 +103,9 @@
             android:id="@+id/resetPasswordButton"
             style="@style/button_style"
             android:text="@string/reset_password_button_label"
-            app:buttonType="@{4}"
+            app:buttonType="@{5}"
             app:disableIf="@{currentUser}"
+            app:userValidated="@{userValidated}"
             app:layout_constraintBottom_toTopOf="@+id/updateAccountButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -110,8 +116,9 @@
             android:id="@+id/updateAccountButton"
             style="@style/button_style"
             android:text="@string/update_account_button_label"
-            app:buttonType="@{4}"
+            app:buttonType="@{5}"
             app:disableIf="@{currentUser}"
+            app:userValidated="@{userValidated}"
             app:layout_constraintBottom_toTopOf="@+id/signOutButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -124,6 +131,7 @@
             android:text="@string/sign_out_button_label"
             app:buttonType="@{2}"
             app:disableIf="@{currentUser}"
+            app:userValidated="@{userValidated}"
             app:layout_constraintBottom_toTopOf="@+id/deleteAccountButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -134,8 +142,9 @@
             android:id="@+id/deleteAccountButton"
             style="@style/button_style"
             android:text="@string/delete_account_button_label"
-            app:buttonType="@{4}"
+            app:buttonType="@{5}"
             app:disableIf="@{currentUser}"
+            app:userValidated="@{userValidated}"
             app:layout_constraintBottom_toTopOf="@+id/sendDataButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -146,8 +155,9 @@
             android:id="@+id/sendDataButton"
             style="@style/button_style"
             android:text="@string/send_data_button_label"
-            app:buttonType="@{4}"
+            app:buttonType="@{5}"
             app:disableIf="@{currentUser}"
+            app:userValidated="@{userValidated}"
             app:layout_constraintBottom_toTopOf="@+id/readDataButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -158,8 +168,9 @@
             android:id="@+id/readDataButton"
             style="@style/button_style"
             android:text="@string/read_data_button_label"
-            app:buttonType="@{4}"
+            app:buttonType="@{5}"
             app:disableIf="@{currentUser}"
+            app:userValidated="@{userValidated}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

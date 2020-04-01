@@ -72,7 +72,12 @@ class MainActivity : AppCompatActivity() {
 
             emailValidationButton.setOnClickListener { sendEmail() }
 
-            accountValidationButton.setOnClickListener { validateUser(true) }
+            accountValidationButton.setOnClickListener {
+                validateUser(true)
+                readDataFromFirebase<FirebaseUsers>(
+                    userValidationReference, "active"
+                )
+            }
 
             resetPasswordButton.setOnClickListener { resetPassword() }
 
@@ -171,6 +176,7 @@ class MainActivity : AppCompatActivity() {
         if (auth.currentUser != null) {
             auth.signOut()
             displayLogAndToast("User signed out")
+            binding.userValidated = false
             updateUI()
             updateData("No data")
         } else {
@@ -219,8 +225,15 @@ class MainActivity : AppCompatActivity() {
                     val dataReceived = dataSnapshot
                         .getValue(T::class.java) ?: "No data received"
                     val fieldRequested = readUnknownProperty(dataReceived, propertyName)
-                    updateData(fieldRequested.toString())
-                    displayLogAndToast(fieldRequested.toString())
+                    //Temporary check until view model is implemented
+                    if (propertyName == "active") {
+                        if (fieldRequested == null) binding.userValidated = false
+                        else binding.userValidated = fieldRequested as Boolean
+                    } else {
+                        updateData(fieldRequested.toString())
+                        displayLogAndToast(fieldRequested.toString())
+                    }
+
                     reference.child(auth.uid.toString())
                         .removeEventListener(firebaseListener!!)
                 }
