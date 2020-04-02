@@ -119,7 +119,7 @@
         <Button
             android:id="@+id/resetPasswordButton"
             style="@style/button_style"
-            android:onClick="@{()->viewModel.resetPassword()}"
+            android:onClick="@{()->viewModel.resetPassword(viewModel.email)}"
             android:text="@string/reset_password_button_label"
             app:buttonType="@{5}"
             app:disableIf="@{viewModel.currentUser}"
