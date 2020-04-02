@@ -31,12 +31,12 @@
             android:id="@+id/informationTextView"
             style="@style/text_information_style"
             android:text="@{information}"
+            app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintBottom_toTopOf="@+id/dataTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
             tools:text="@string/information_text_label" />
 
         <TextView
@@ -56,8 +56,8 @@
             android:text="@string/sign_up_button_label"
             app:buttonType="@{1}"
             app:disableIf="@{currentUser}"
-            app:layout_constraintBottom_toTopOf="@+id/signInButton"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/signOutButton"
+            app:layout_constraintEnd_toStartOf="@+id/signInButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dataTextView" />
@@ -68,62 +68,10 @@
             android:text="@string/sign_in_button_label"
             app:buttonType="@{1}"
             app:disableIf="@{currentUser}"
-            app:layout_constraintBottom_toTopOf="@+id/emailValidationButton"
+            app:layout_constraintBaseline_toBaselineOf="@+id/signUpButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/signUpButton" />
-
-        <Button
-            android:id="@+id/emailValidationButton"
-            style="@style/button_style"
-            android:text="@string/validate_email_button_label"
-            app:buttonType="@{3}"
-            app:disableIf="@{currentUser}"
-            app:layout_constraintBottom_toTopOf="@+id/accountValidationButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/signInButton" />
-
-        <Button
-            android:id="@+id/accountValidationButton"
-            style="@style/button_style"
-            android:text="@string/validate_account_button_label"
-            app:buttonType="@{4}"
-            app:disableIf="@{currentUser}"
-            app:userValidated="@{userValidated}"
-            app:layout_constraintBottom_toTopOf="@+id/resetPasswordButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/emailValidationButton" />
-
-        <Button
-            android:id="@+id/resetPasswordButton"
-            style="@style/button_style"
-            android:text="@string/reset_password_button_label"
-            app:buttonType="@{5}"
-            app:disableIf="@{currentUser}"
-            app:userValidated="@{userValidated}"
-            app:layout_constraintBottom_toTopOf="@+id/updateAccountButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/accountValidationButton" />
-
-        <Button
-            android:id="@+id/updateAccountButton"
-            style="@style/button_style"
-            android:text="@string/update_account_button_label"
-            app:buttonType="@{5}"
-            app:disableIf="@{currentUser}"
-            app:userValidated="@{userValidated}"
-            app:layout_constraintBottom_toTopOf="@+id/signOutButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/resetPasswordButton" />
+            app:layout_constraintStart_toEndOf="@+id/signUpButton" />
 
         <Button
             android:id="@+id/signOutButton"
@@ -131,12 +79,86 @@
             android:text="@string/sign_out_button_label"
             app:buttonType="@{2}"
             app:disableIf="@{currentUser}"
-            app:userValidated="@{userValidated}"
-            app:layout_constraintBottom_toTopOf="@+id/deleteAccountButton"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/accountValidationButton"
+            app:layout_constraintEnd_toStartOf="@+id/emailValidationButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/updateAccountButton" />
+            app:layout_constraintTop_toBottomOf="@+id/signUpButton"
+            app:userValidated="@{userValidated}" />
+
+        <Button
+            android:id="@+id/emailValidationButton"
+            style="@style/button_style"
+            android:text="@string/validate_email_button_label"
+            app:buttonType="@{3}"
+            app:disableIf="@{currentUser}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/signOutButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/signOutButton" />
+
+        <Button
+            android:id="@+id/accountValidationButton"
+            style="@style/button_style"
+            android:text="@string/validate_account_button_label"
+            app:buttonType="@{4}"
+            app:disableIf="@{currentUser}"
+            app:layout_constraintBottom_toTopOf="@+id/resetPasswordButton"
+            app:layout_constraintEnd_toStartOf="@+id/accountInvalidationButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/signOutButton"
+            app:userValidated="@{userValidated}" />
+
+        <Button
+            android:id="@+id/accountInvalidationButton"
+            style="@style/button_style"
+            android:text="@string/invalidate_account"
+            app:buttonType="@{5}"
+            app:disableIf="@{currentUser}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/accountValidationButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/accountValidationButton"
+            app:userValidated="@{userValidated}" />
+
+        <Button
+            android:id="@+id/resetPasswordButton"
+            style="@style/button_style"
+            android:text="@string/reset_password_button_label"
+            app:buttonType="@{5}"
+            app:disableIf="@{currentUser}"
+            app:layout_constraintBottom_toTopOf="@+id/updateAccountButton"
+            app:layout_constraintEnd_toStartOf="@+id/updatePassWordButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/accountValidationButton"
+            app:userValidated="@{userValidated}" />
+
+        <Button
+            android:id="@+id/updateAccountButton"
+            style="@style/button_style"
+            android:text="@string/update_account_button_label"
+            app:buttonType="@{5}"
+            app:disableIf="@{currentUser}"
+            app:layout_constraintBottom_toTopOf="@+id/sendDataButton"
+            app:layout_constraintEnd_toStartOf="@+id/deleteAccountButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/resetPasswordButton"
+            app:userValidated="@{userValidated}" />
+
+        <Button
+            android:id="@+id/updatePassWordButton"
+            style="@style/button_style"
+            android:text="@string/update_password"
+            app:buttonType="@{5}"
+            app:disableIf="@{currentUser}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/resetPasswordButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/resetPasswordButton"
+            app:userValidated="@{userValidated}" />
 
         <Button
             android:id="@+id/deleteAccountButton"
@@ -144,12 +166,11 @@
             android:text="@string/delete_account_button_label"
             app:buttonType="@{5}"
             app:disableIf="@{currentUser}"
-            app:userValidated="@{userValidated}"
-            app:layout_constraintBottom_toTopOf="@+id/sendDataButton"
+            app:layout_constraintBaseline_toBaselineOf="@+id/updateAccountButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/signOutButton" />
+            app:layout_constraintStart_toEndOf="@+id/updateAccountButton"
+            app:userValidated="@{userValidated}" />
 
         <Button
             android:id="@+id/sendDataButton"
@@ -157,12 +178,12 @@
             android:text="@string/send_data_button_label"
             app:buttonType="@{5}"
             app:disableIf="@{currentUser}"
-            app:userValidated="@{userValidated}"
-            app:layout_constraintBottom_toTopOf="@+id/readDataButton"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/readDataButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/deleteAccountButton" />
+            app:layout_constraintTop_toBottomOf="@+id/updateAccountButton"
+            app:userValidated="@{userValidated}" />
 
         <Button
             android:id="@+id/readDataButton"
@@ -170,12 +191,11 @@
             android:text="@string/read_data_button_label"
             app:buttonType="@{5}"
             app:disableIf="@{currentUser}"
-            app:userValidated="@{userValidated}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@+id/sendDataButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sendDataButton" />
+            app:layout_constraintStart_toEndOf="@+id/sendDataButton"
+            app:userValidated="@{userValidated}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

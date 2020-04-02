@@ -72,16 +72,15 @@ class MainActivity : AppCompatActivity() {
 
             emailValidationButton.setOnClickListener { sendEmail() }
 
-            accountValidationButton.setOnClickListener {
-                validateUser(true)
-                readDataFromFirebase<FirebaseUsers>(
-                    userValidationReference, "active"
-                )
-            }
+            accountValidationButton.setOnClickListener { validateUser(true) }
+
+            accountInvalidationButton.setOnClickListener { validateUser(false) }
 
             resetPasswordButton.setOnClickListener { resetPassword() }
 
             updateAccountButton.setOnClickListener { updateProfile(name) }
+
+            updatePassWordButton.setOnClickListener { updatePassword() }
 
             signOutButton.setOnClickListener { signOut() }
 
@@ -91,6 +90,16 @@ class MainActivity : AppCompatActivity() {
 
             readDataButton.setOnClickListener { listenData() }
         }
+    }
+
+    private fun updatePassword() {
+        auth.currentUser?.updatePassword("123456")
+            ?.addOnCompleteListener { task ->
+                taskListener(
+                    task, "Password Updated",
+                    "Failure update password ${task.exception}"
+                )
+            }
     }
 
     //Sign up with the correspond email and password
@@ -118,6 +127,7 @@ class MainActivity : AppCompatActivity() {
     // Validate User Function
     private fun validateUser(dataToSend: Boolean) {
         sendDataToFirebase(FirebaseUsers(active = dataToSend), userValidationReference)
+        readDataFromFirebase<FirebaseUsers>(userValidationReference, "active")
     }
 
     //Send the email for validation

@@ -9,27 +9,29 @@
     </style>
 
     <style name="view_layout_style">
-        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-        <item name="android:layout_marginStart">64dp</item>
-        <item name="android:layout_marginEnd">64dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
     </style>
 
     <style name="button_style" parent="view_layout_style">
-        <item name="android:padding">8dp</item>
+        <item name="android:layout_width">160dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
         <item name="android:background">@drawable/round_button</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="text_information_style" parent="view_layout_style">
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:layout_marginStart">8dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
     </style>
 
 </resources>
