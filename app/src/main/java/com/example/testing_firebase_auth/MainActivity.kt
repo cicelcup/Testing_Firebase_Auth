@@ -33,4 +33,14 @@ class MainActivity : AppCompatActivity() {
 
         binding.lifecycleOwner = this
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.firebaseDB.addUserValidListener()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.firebaseDB.removeUserValidListener()
+    }
 }

@@ -13,7 +13,7 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
     }
 
     //Firebase DB class access
-    private val firebaseDB = FirebaseDB(application)
+    val firebaseDB = FirebaseDB(application)
 
     //Variables for ui referenced in layout
     val information: LiveData<String> = firebaseDB.information

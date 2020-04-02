@@ -24,12 +24,12 @@ class FirebaseDB(application: Application) {
     val data = MutableLiveData<String>()
 
     //Variables for controlling ui referenced in layout
-    val userValidated = MutableLiveData(false)
+    val userValidated = MutableLiveData<Boolean>()
 
     /* Firebase variables */
 
     //Auth Variable
-    var auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     val currentUser = MutableLiveData(auth.currentUser)
 
@@ -42,8 +42,9 @@ class FirebaseDB(application: Application) {
     //User Reference
     private val userValidationReference = firebaseDB.getReference("users")
 
-    //Firebase Listener
+    //Firebase Listeners
     private var firebaseListener: ValueEventListener? = null
+    private var validUserListener: ValueEventListener? = null
 
     private var cont = Random.nextInt(0, 100)
     private var dataToSend: String = "Information sent it $cont"
@@ -61,7 +62,8 @@ class FirebaseDB(application: Application) {
             .addOnCompleteListener { task ->
                 taskListener(
                     task, "User created",
-                    "Fails creating user ${task.exception}"
+                    "Fails creating user ${task.exception}",
+                    "signUp"
                 )
             }
     }
@@ -72,21 +74,21 @@ class FirebaseDB(application: Application) {
             .addOnCompleteListener { task ->
                 taskListener(
                     task, "Sign in successful",
-                    "Fails signing in ${task.exception}"
+                    "Fails signing in ${task.exception}",
+                    "signIn"
                 )
             }
     }
 
     //Sign out function
     fun signOut() {
+        removeUserValidListener()
         //sign out the user
         auth.signOut()
         //update the current value
         currentUser.value = auth.currentUser
         //Display the message
-        displayLogAndToast("User signed out")
-        //Disable the user validated button
-        userValidated.value = false
+        displayLogAndToast("User signed out successfully")
         //update the UI
         updateUI()
         //update the data received
@@ -100,7 +102,8 @@ class FirebaseDB(application: Application) {
             ?.addOnCompleteListener { task ->
                 taskListener(
                     task, "Email validation sent",
-                    "Fails sending email validation ${task.exception}"
+                    "Fails sending email validation ${task.exception}",
+                    "sendEmail"
                 )
             }
         signOut()
@@ -109,7 +112,6 @@ class FirebaseDB(application: Application) {
     // Validate User Function
     fun validateUser(dataToSend: Boolean) {
         sendDataToFirebase(FirebaseUsers(active = dataToSend), userValidationReference)
-        readDataFromFirebase<FirebaseUsers>(userValidationReference, "active")
     }
 
     //Reset Password Function
@@ -119,7 +121,8 @@ class FirebaseDB(application: Application) {
             .addOnCompleteListener { task ->
                 taskListener(
                     task, "Recovery email sent successful",
-                    "Fails sending recovery email ${task.exception}"
+                    "Fails sending recovery email ${task.exception}",
+                    "resetPassword"
                 )
             }
         signOut()
@@ -131,7 +134,8 @@ class FirebaseDB(application: Application) {
             ?.addOnCompleteListener { task ->
                 taskListener(
                     task, "Password Updated",
-                    "Fails updating password ${task.exception}"
+                    "Fails updating password ${task.exception}",
+                    "updatePassWord"
                 )
             }
     }
@@ -146,7 +150,8 @@ class FirebaseDB(application: Application) {
             ?.addOnCompleteListener { task ->
                 taskListener(
                     task, "Profile Updated",
-                    "Fails updating profile ${task.exception}"
+                    "Fails updating profile ${task.exception}",
+                    "updateAccount"
                 )
             }
     }
@@ -157,7 +162,8 @@ class FirebaseDB(application: Application) {
             ?.addOnCompleteListener { task ->
                 taskListener(
                     task, "User Deleted",
-                    "Fails deleting user ${task.exception}"
+                    "Fails deleting user ${task.exception}",
+                    "deleteAccount"
                 )
             }
         updateData("No data received")
@@ -179,7 +185,8 @@ class FirebaseDB(application: Application) {
             .addOnCompleteListener { task ->
                 taskListener(
                     task, "Data sent it",
-                    "Fails sending data ${task.exception}"
+                    "Fails sending data ${task.exception}",
+                    "sendDataToFirebase"
                 )
             }
     }
@@ -199,14 +206,8 @@ class FirebaseDB(application: Application) {
                     val dataReceived = dataSnapshot
                         .getValue(T::class.java) ?: "No data received"
                     val fieldRequested = readUnknownProperty(dataReceived, propertyName)
-                    //Temporary check until active mode observation is implemented
-                    if (propertyName == "active") {
-                        userValidated.value = if (fieldRequested == null) false
-                        else fieldRequested as Boolean
-                    } else {
-                        updateData(fieldRequested.toString())
-                        displayLogAndToast(fieldRequested.toString())
-                    }
+                    updateData(fieldRequested.toString())
+                    displayLogAndToast(fieldRequested.toString())
 
                     reference.child(currentUser.value?.uid.toString())
                         .removeEventListener(firebaseListener!!)
@@ -217,6 +218,38 @@ class FirebaseDB(application: Application) {
         }
         reference.child(currentUser.value?.uid.toString())
             .addListenerForSingleValueEvent(firebaseListener!!)
+    }
+
+    //Check valid user
+    fun addUserValidListener() {
+        if (auth.currentUser != null && auth.currentUser!!.isEmailVerified) {
+            if (validUserListener == null) {
+                validUserListener = object : ValueEventListener {
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        displayLogAndToast("Fails validating user $databaseError")
+                    }
+
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val dataReceived = dataSnapshot.getValue(FirebaseUsers::class.java)?.active
+                        userValidated.value = dataReceived
+                        displayLogAndToast("User checked")
+                        updateUI()
+                    }
+                }
+            }
+
+            userValidationReference.child(currentUser.value?.uid.toString())
+                .addValueEventListener(validUserListener!!)
+        }
+    }
+
+    fun removeUserValidListener() {
+        if (validUserListener != null) {
+            userValidationReference.child(currentUser.value?.uid.toString())
+                .removeEventListener(validUserListener!!)
+            validUserListener = null
+            userValidated.value = null
+        }
     }
 
     //Using reflection to check any field value from a class that is unknown
@@ -249,13 +282,16 @@ class FirebaseDB(application: Application) {
     private fun <T : Any?> taskListener(
         task: Task<T>,
         successMessage: String,
-        failureMessage: String
+        failureMessage: String,
+        whoCalls: String
     ) {
         if (task.isSuccessful) {
             //updating the current user variable globally
             currentUser.value = auth.currentUser
             displayLogAndToast(successMessage)
             updateUI()
+            if (whoCalls == "signIn") addUserValidListener()
+            if (whoCalls == "signUp") validateUser(false)
         } else {
             displayLogAndToast(failureMessage)
         }
@@ -268,9 +304,10 @@ class FirebaseDB(application: Application) {
 
     //Update the label in the UI to show the current information
     private fun updateUI() {
-        information.value = "User: ${currentUser.value?.uid ?: "Not user"} \n" +
+        information.value = "User: ${currentUser.value?.uid ?: "Not user"}\n" +
                 "Name: ${currentUser.value?.displayName ?: "Not name"} " +
-                "/ EmailValidate: ${currentUser.value?.isEmailVerified ?: "Not email"}"
+                "/ EmailValidate: ${currentUser.value?.isEmailVerified ?: "Not email"}\n" +
+                "User Validated: ${userValidated.value ?: "Not Validated"}"
     }
 
     //Log the message parameter
