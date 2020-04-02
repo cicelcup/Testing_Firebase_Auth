@@ -4,6 +4,8 @@ import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -21,11 +23,15 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
     }
 
     //Variables for ui referenced in layout
-    lateinit var information: String
-    lateinit var data: String
+    private val _information = MutableLiveData<String>()
+    val information: LiveData<String> = _information
+
+    private val _data = MutableLiveData<String>()
+    val data: LiveData<String> = _data
 
     //Variables for controlling ui referenced in layout
-    var userValidated: Boolean = false
+    private val _userValidated = MutableLiveData(false)
+    val userValidated: LiveData<Boolean> = _userValidated
 
     /* Firebase variables */
 
@@ -33,7 +39,8 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     //Current User Variable
-    var currentUser: FirebaseUser? = auth.currentUser
+    private val _currentUser = MutableLiveData(auth.currentUser)
+    val currentUser: LiveData<FirebaseUser?> = _currentUser
 
     //Firebase Instance
     private val firebaseDB = FirebaseDatabase.getInstance()
@@ -56,7 +63,7 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
 
     init {
         updateUI()
-        updateData("No data")
+        updateData("No data received")
     }
 
     //Sign up with the correspond email and password
@@ -83,31 +90,30 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
 
     //Sign out function
     fun signOut() {
-        if (currentUser != null) {
-            auth.signOut()
-            displayLogAndToast("User signed out")
-            userValidated = false
-            updateUI()
-            updateData("No data")
-        } else {
-            displayLogAndToast("Fails signing out. User not auth")
-        }
+        //sign out the user
+        auth.signOut()
+        //update the current value
+        _currentUser.value = auth.currentUser
+        //Display the message
+        displayLogAndToast("User signed out")
+        //Disable the user validated button
+        _userValidated.value = false
+        //update the UI
+        updateUI()
+        //update the data received
+        updateData("No data received")
     }
 
     //Send the email for validation
     fun sendEmail() {
-        if (currentUser != null) {
-            auth.setLanguageCode("es")
-            currentUser?.sendEmailVerification()
-                ?.addOnCompleteListener { task ->
-                    taskListener(
-                        task, "Email validation sent",
-                        "Fails sending email validation ${task.exception}"
-                    )
-                }
-        } else {
-            displayLogAndToast("Fails sending email validation. User not auth")
-        }
+        auth.setLanguageCode("es")
+        currentUser.value?.sendEmailVerification()
+            ?.addOnCompleteListener { task ->
+                taskListener(
+                    task, "Email validation sent",
+                    "Fails sending email validation ${task.exception}"
+                )
+            }
     }
 
     // Validate User Function
@@ -118,24 +124,21 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
 
     //Reset Password Function
     fun resetPassword() {
-        if (currentUser != null) {
-            auth.setLanguageCode("es")
-            auth.sendPasswordResetEmail(email)
-                .addOnCompleteListener { task ->
-                    taskListener(
-                        task, "Recovery email sent successful",
-                        "Fails sending recovery email ${task.exception}"
-                    )
-                }
-            auth.signOut()
-        } else {
-            displayLogAndToast("It's not possible to reset password. User not auth")
-        }
+        auth.setLanguageCode("es")
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                taskListener(
+                    task, "Recovery email sent successful",
+                    "Fails sending recovery email ${task.exception}"
+                )
+            }
+        auth.signOut()
+        updateData("No data received")
     }
 
     //Update Password Function
     fun updatePassword(newPassword: String) {
-        auth.currentUser?.updatePassword(newPassword)
+        currentUser.value?.updatePassword(newPassword)
             ?.addOnCompleteListener { task ->
                 taskListener(
                     task, "Password Updated",
@@ -146,36 +149,29 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
 
     //update profile function. It creates a profile update with the correspond information
     fun updateAccount(name: String) {
-        if (currentUser != null) {
-            val profileUpdates = UserProfileChangeRequest.Builder()
-                .setDisplayName(name)
-                .build()
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(name)
+            .build()
 
-            currentUser?.updateProfile(profileUpdates)
-                ?.addOnCompleteListener { task ->
-                    taskListener(
-                        task, "Profile Updated",
-                        "Fails updating profile ${task.exception}"
-                    )
-                }
-        } else {
-            displayLogAndToast("It is not possible update profile. User not auth")
-        }
+        currentUser.value?.updateProfile(profileUpdates)
+            ?.addOnCompleteListener { task ->
+                taskListener(
+                    task, "Profile Updated",
+                    "Fails updating profile ${task.exception}"
+                )
+            }
     }
 
     //Delete user function
     fun deleteAccount() {
-        if (currentUser != null) {
-            currentUser?.delete()
-                ?.addOnCompleteListener { task ->
-                    taskListener(
-                        task, "User Deleted",
-                        "Fails deleting user ${task.exception}"
-                    )
-                }
-        } else {
-            displayLogAndToast("It is not possible to delete user. User not auth")
-        }
+        currentUser.value?.delete()
+            ?.addOnCompleteListener { task ->
+                taskListener(
+                    task, "User Deleted",
+                    "Fails deleting user ${task.exception}"
+                )
+            }
+        updateData("No data received")
     }
 
     //Send Data function
@@ -191,7 +187,7 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
 
     //Send any data to firebase to any reference
     private fun sendDataToFirebase(firebaseData: Any, reference: DatabaseReference) {
-        reference.child(currentUser?.uid.toString()).setValue(firebaseData)
+        reference.child(currentUser.value?.uid.toString()).setValue(firebaseData)
             .addOnCompleteListener { task ->
                 taskListener(
                     task, "Data sent it",
@@ -217,21 +213,21 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
                     val fieldRequested = readUnknownProperty(dataReceived, propertyName)
                     //Temporary check until active mode observation is implemented
                     if (propertyName == "active") {
-                        userValidated = if (fieldRequested == null) false
+                        _userValidated.value = if (fieldRequested == null) false
                         else fieldRequested as Boolean
                     } else {
                         updateData(fieldRequested.toString())
                         displayLogAndToast(fieldRequested.toString())
                     }
 
-                    reference.child(currentUser?.uid.toString())
+                    reference.child(currentUser.value?.uid.toString())
                         .removeEventListener(firebaseListener!!)
                     firebaseListener = null
                 }
 
             }
         }
-        reference.child(currentUser?.uid.toString())
+        reference.child(currentUser.value?.uid.toString())
             .addListenerForSingleValueEvent(firebaseListener!!)
     }
 
@@ -263,7 +259,7 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
 
     //Update the data received
     private fun updateData(dataReceived: String) {
-        data = dataReceived
+        _data.value = dataReceived
     }
 
     //Generic function receiving any kind of Task for displaying and log the result
@@ -274,7 +270,7 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
     ) {
         if (task.isSuccessful) {
             //updating the current user variable globally
-            currentUser = auth.currentUser
+            _currentUser.value = auth.currentUser
             displayLogAndToast(successMessage)
             updateUI()
         } else {
@@ -290,8 +286,8 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
 
     //Update the label in the UI to show the current information
     private fun updateUI() {
-        information = "User: ${currentUser?.uid ?: "Not user"} \n" +
-                "Name: ${currentUser?.displayName ?: "Not name"} " +
-                "/ EmailValidate: ${currentUser?.isEmailVerified ?: "Not email"}"
+        _information.value = "User: ${currentUser.value?.uid ?: "Not user"} \n" +
+                "Name: ${currentUser.value?.displayName ?: "Not name"} " +
+                "/ EmailValidate: ${currentUser.value?.isEmailVerified ?: "Not email"}"
     }
 }
