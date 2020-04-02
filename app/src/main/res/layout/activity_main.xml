@@ -6,20 +6,8 @@
     <data>
 
         <variable
-            name="information"
-            type="String" />
-
-        <variable
-            name="data"
-            type="String" />
-
-        <variable
-            name="currentUser"
-            type="com.google.firebase.auth.FirebaseUser" />
-
-        <variable
-            name="userValidated"
-            type="Boolean" />
+            name="viewModel"
+            type="com.example.testing_firebase_auth.FirebaseViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,19 +18,19 @@
         <TextView
             android:id="@+id/informationTextView"
             style="@style/text_information_style"
-            android:text="@{information}"
-            app:layout_constraintVertical_chainStyle="packed"
+            android:text="@{viewModel.information}"
             app:layout_constraintBottom_toTopOf="@+id/dataTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             tools:text="@string/information_text_label" />
 
         <TextView
             android:id="@+id/dataTextView"
             style="@style/text_information_style"
-            android:text="@{data}"
+            android:text="@{viewModel.data}"
             app:layout_constraintBottom_toTopOf="@+id/signUpButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -53,9 +41,10 @@
         <Button
             android:id="@+id/signUpButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.signUp(viewModel.email,viewModel.password)}"
             android:text="@string/sign_up_button_label"
             app:buttonType="@{1}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBottom_toTopOf="@+id/signOutButton"
             app:layout_constraintEnd_toStartOf="@+id/signInButton"
             app:layout_constraintHorizontal_bias="0.5"
@@ -65,9 +54,10 @@
         <Button
             android:id="@+id/signInButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.signIn(viewModel.email,viewModel.password)}"
             android:text="@string/sign_in_button_label"
             app:buttonType="@{1}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBaseline_toBaselineOf="@+id/signUpButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -76,22 +66,24 @@
         <Button
             android:id="@+id/signOutButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.signOut()}"
             android:text="@string/sign_out_button_label"
             app:buttonType="@{2}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBottom_toTopOf="@+id/accountValidationButton"
             app:layout_constraintEnd_toStartOf="@+id/emailValidationButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/signUpButton"
-            app:userValidated="@{userValidated}" />
+            app:userValidated="@{viewModel.userValidated}" />
 
         <Button
             android:id="@+id/emailValidationButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.sendEmail()}"
             android:text="@string/validate_email_button_label"
             app:buttonType="@{3}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBaseline_toBaselineOf="@+id/signOutButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -100,102 +92,111 @@
         <Button
             android:id="@+id/accountValidationButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.validateUser(true)}"
             android:text="@string/validate_account_button_label"
             app:buttonType="@{4}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBottom_toTopOf="@+id/resetPasswordButton"
             app:layout_constraintEnd_toStartOf="@+id/accountInvalidationButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/signOutButton"
-            app:userValidated="@{userValidated}" />
+            app:userValidated="@{viewModel.userValidated}" />
 
         <Button
             android:id="@+id/accountInvalidationButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.validateUser(false)}"
             android:text="@string/invalidate_account"
             app:buttonType="@{5}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBaseline_toBaselineOf="@+id/accountValidationButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/accountValidationButton"
-            app:userValidated="@{userValidated}" />
+            app:userValidated="@{viewModel.userValidated}" />
 
         <Button
             android:id="@+id/resetPasswordButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.resetPassword()}"
             android:text="@string/reset_password_button_label"
             app:buttonType="@{5}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBottom_toTopOf="@+id/updateAccountButton"
             app:layout_constraintEnd_toStartOf="@+id/updatePassWordButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/accountValidationButton"
-            app:userValidated="@{userValidated}" />
+            app:userValidated="@{viewModel.userValidated}" />
+
+        <Button
+            android:id="@+id/updatePassWordButton"
+            style="@style/button_style"
+            android:onClick="@{()->viewModel.updatePassword(viewModel.password)}"
+            android:text="@string/update_password"
+            app:buttonType="@{5}"
+            app:disableIf="@{viewModel.currentUser}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/resetPasswordButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/resetPasswordButton"
+            app:userValidated="@{viewModel.userValidated}" />
 
         <Button
             android:id="@+id/updateAccountButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.updateAccount(viewModel.name)}"
             android:text="@string/update_account_button_label"
             app:buttonType="@{5}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBottom_toTopOf="@+id/sendDataButton"
             app:layout_constraintEnd_toStartOf="@+id/deleteAccountButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/resetPasswordButton"
-            app:userValidated="@{userValidated}" />
+            app:userValidated="@{viewModel.userValidated}" />
 
-        <Button
-            android:id="@+id/updatePassWordButton"
-            style="@style/button_style"
-            android:text="@string/update_password"
-            app:buttonType="@{5}"
-            app:disableIf="@{currentUser}"
-            app:layout_constraintBaseline_toBaselineOf="@+id/resetPasswordButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/resetPasswordButton"
-            app:userValidated="@{userValidated}" />
 
         <Button
             android:id="@+id/deleteAccountButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.deleteAccount()}"
             android:text="@string/delete_account_button_label"
             app:buttonType="@{5}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBaseline_toBaselineOf="@+id/updateAccountButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/updateAccountButton"
-            app:userValidated="@{userValidated}" />
+            app:userValidated="@{viewModel.userValidated}" />
 
         <Button
             android:id="@+id/sendDataButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.sendData()}"
             android:text="@string/send_data_button_label"
             app:buttonType="@{5}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/readDataButton"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/updateAccountButton"
-            app:userValidated="@{userValidated}" />
+            app:userValidated="@{viewModel.userValidated}" />
 
         <Button
             android:id="@+id/readDataButton"
             style="@style/button_style"
+            android:onClick="@{()->viewModel.readData()}"
             android:text="@string/read_data_button_label"
             app:buttonType="@{5}"
-            app:disableIf="@{currentUser}"
+            app:disableIf="@{viewModel.currentUser}"
             app:layout_constraintBaseline_toBaselineOf="@+id/sendDataButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/sendDataButton"
-            app:userValidated="@{userValidated}" />
+            app:userValidated="@{viewModel.userValidated}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
