@@ -246,6 +246,7 @@ class MainActivity : AppCompatActivity() {
 
                     reference.child(auth.uid.toString())
                         .removeEventListener(firebaseListener!!)
+                    firebaseListener = null
                 }
 
             }
