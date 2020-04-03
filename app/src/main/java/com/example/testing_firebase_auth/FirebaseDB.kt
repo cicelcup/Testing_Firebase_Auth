@@ -1,8 +1,12 @@
 package com.example.testing_firebase_auth
 
 import android.app.Application
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -19,7 +23,7 @@ class FirebaseDB(application: Application) {
     }
 
     //Variables for ui referenced in layout
-    val information = MutableLiveData<String>()
+    val information = MutableLiveData<SpannableStringBuilder>()
 
     val data = MutableLiveData<String>()
 
@@ -297,6 +301,12 @@ class FirebaseDB(application: Application) {
         }
     }
 
+    //Log the message parameter
+    private fun displayLogAndToast(message: String) {
+        Log.i(FirebaseViewModel.TAG, message)
+        Toast.makeText(applicationReceived, message, Toast.LENGTH_SHORT).show()
+    }
+
     //Update the data received
     private fun updateData(dataReceived: String) {
         data.value = dataReceived
@@ -304,15 +314,41 @@ class FirebaseDB(application: Application) {
 
     //Update the label in the UI to show the current information
     private fun updateUI() {
-        information.value = "User: ${currentUser.value?.uid ?: "Not user"}\n" +
-                "Name: ${currentUser.value?.displayName ?: "Not name"} " +
-                "/ EmailValidate: ${currentUser.value?.isEmailVerified ?: "Not email"}\n" +
-                "User Validated: ${userValidated.value ?: "Not Validated"}"
+        // Variable to format the string in different ways
+        val sp = formatAllText()
+
+        //Update the ui
+        information.value = sp
     }
 
-    //Log the message parameter
-    private fun displayLogAndToast(message: String) {
-        Log.i(FirebaseViewModel.TAG, message)
-        Toast.makeText(applicationReceived, message, Toast.LENGTH_SHORT).show()
+    //Format all the UI with different colors
+    private fun formatAllText(): SpannableStringBuilder {
+        val sp = SpannableStringBuilder()
+
+        var text = "User: ${currentUser.value?.uid ?: "Not user"}\n"
+        sp.append(formatText(text, 5))
+
+        text = "Name: ${currentUser.value?.displayName ?: "Not name"} "
+        sp.append(formatText(text, 5))
+
+        text = "/ EmailValidate: ${currentUser.value?.isEmailVerified ?: "Not email"}\n"
+        sp.append(formatText(text, 16))
+
+        text = "User Validated: ${userValidated.value ?: "Not Validated"}"
+        sp.append(formatText(text, 15))
+
+        return sp
+    }
+
+    //Format text with different colors
+    private fun formatText(text: String, length: Int): SpannableStringBuilder {
+
+        val smallSp = SpannableStringBuilder()
+        smallSp.append(text)
+
+        val colorText = ForegroundColorSpan(getColor(applicationReceived, R.color.colorPrimary))
+        smallSp.setSpan(colorText, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        return smallSp
     }
 }

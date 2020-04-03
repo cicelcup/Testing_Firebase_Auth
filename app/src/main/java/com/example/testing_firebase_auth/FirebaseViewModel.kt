@@ -1,6 +1,7 @@
 package com.example.testing_firebase_auth
 
 import android.app.Application
+import android.text.SpannableStringBuilder
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.google.firebase.auth.FirebaseUser
@@ -16,7 +17,7 @@ class FirebaseViewModel(application: Application) : AndroidViewModel(application
     val firebaseDB = FirebaseDB(application)
 
     //Variables for ui referenced in layout
-    val information: LiveData<String> = firebaseDB.information
+    val information: LiveData<SpannableStringBuilder> = firebaseDB.information
 
     val data: LiveData<String> = firebaseDB.data
 
