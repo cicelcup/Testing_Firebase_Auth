@@ -15,6 +15,7 @@ import com.google.firebase.database.*
 import kotlin.random.Random
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.internal.impl.resolve.constants.NullValue
 
 class FirebaseDB(application: Application) {
     //Constant for Log
@@ -208,8 +209,9 @@ class FirebaseDB(application: Application) {
 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val dataReceived = dataSnapshot
-                        .getValue(T::class.java) ?: "No data received"
-                    val fieldRequested = readUnknownProperty(dataReceived, propertyName)
+                        .getValue(T::class.java) ?: NullValue()
+                    val fieldRequested =
+                        readUnknownProperty(dataReceived, propertyName) ?: "No data received"
                     updateData(fieldRequested.toString())
                     displayLogAndToast(fieldRequested.toString())
 
@@ -234,7 +236,8 @@ class FirebaseDB(application: Application) {
                     }
 
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val dataReceived = dataSnapshot.getValue(FirebaseUsers::class.java)?.active
+                        val dataReceived = dataSnapshot
+                            .getValue(FirebaseUsers::class.java)?.active
                         userValidated.value = dataReceived
                         displayLogAndToast("User checked")
                         updateUI()
