@@ -311,7 +311,7 @@ class FirebaseDB(application: Application) {
 
     //Log the message parameter
     private fun displayLogAndToast(message: String) {
-        Log.i(FirebaseViewModel.TAG, message)
+        Log.i(TAG, message)
         Toast.makeText(applicationReceived, message, Toast.LENGTH_SHORT).show()
     }
 
