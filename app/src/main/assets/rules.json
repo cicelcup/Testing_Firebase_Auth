@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "messages": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "dataTest": {
+      ".read": "root.child('users').child(auth.uid).child('active').val() === true",
+      ".write": "root.child('users').child(auth.uid).child('active').val() === true"
+    },
+    "users": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}
