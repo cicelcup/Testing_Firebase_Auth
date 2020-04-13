@@ -57,8 +57,13 @@ class FirebaseDB(application: Application) {
     private val applicationReceived = application
 
     init {
-        updateUI()
-        updateData("No data received")
+        if (currentUser.value?.uid != null) {
+            Log.i(TAG, "Prueba ${currentUser.value?.uid}")
+            signOut()
+        } else {
+            updateUI()
+            updateData("No data received")
+        }
     }
 
     //Sign up with the correspond email and password
