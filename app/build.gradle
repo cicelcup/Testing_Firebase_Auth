@@ -49,7 +49,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //Kotlin Reflection
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.70"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
     // Lifecycle components
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     //implementation of another live cycle library
@@ -57,4 +57,6 @@ dependencies {
     kapt 'androidx.lifecycle:lifecycle-compiler:2.2.0'
     // ViewModel Kotlin support
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    //Stetho
+    implementation 'com.facebook.stetho:stetho:1.5.1'
 }

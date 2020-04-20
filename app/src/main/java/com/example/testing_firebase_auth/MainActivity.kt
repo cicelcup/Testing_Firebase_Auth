@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.testing_firebase_auth.databinding.ActivityMainBinding
+import com.facebook.stetho.Stetho
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Stetho.initializeWithDefaults(this)
 
         viewModel = ViewModelProvider(this).get(FirebaseViewModel::class.java)
 
